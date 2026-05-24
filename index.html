@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard - MFD 2x2 Glass Edition</title>
+    <title>Dashboard - 2x2 Ultimate Edition</title>
     <style>
         /* ==========================================================================================
            1. デザインシステム＆テーマ定義
            ========================================================================================== */
         :root {
-            /* デフォルト（モダンガラス - 強化版） */
+            /* デフォルト（モダンガラス・ソリッドブラック背景） */
             --bg-color: #000000;
-            --card-bg: rgba(0, 0, 0, 0.3); /* 透明度を上げる */
-            --card-border: rgba(255, 255, 255, 0.08); /* ボーダーを薄く */
+            --card-bg: rgba(255, 255, 255, 0.05); /* うっすらとしたガラス感 */
+            --card-border: rgba(255, 255, 255, 0.12);
             --text-primary: #ffffff;
             --text-secondary: #a0aec0;
             --accent-color: #3182ce;
             --card-radius: 24px;
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
         /* テーマ：フラットダーク */
@@ -44,27 +44,24 @@
 
         body {
             margin: 0; padding: 0; 
-            background-color: var(--bg-color); background-size: cover; background-position: center;
+            background-color: var(--bg-color); /* 背景画像は排除し黒で統一 */
             color: var(--text-primary); font-family: var(--font-main);
             display: flex; height: 100vh; overflow: hidden; user-select: none;
-            transition: background-image 0.5s ease;
         }
 
-        /* === カード共通共通共通共通 === */
+        /* === カード共通 === */
         .card {
             border-radius: var(--card-radius); padding: 20px; box-sizing: border-box;
             box-shadow: var(--shadow); position: relative; overflow: hidden;
             display: flex; flex-direction: column; justify-content: space-between; 
             background: var(--card-bg); border: 1px solid var(--card-border);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
             min-width: 0; min-height: 0; 
         }
 
-        /* === モダンガラス (defaultテーマ) のカード強化 === */
+        /* モダンガラスのエッジライト効果 */
         body[data-theme="default"] .card {
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
         }
         body[data-theme="default"] .card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -72,26 +69,12 @@
             pointer-events: none; z-index: -1;
         }
 
-        /* ★ニュースカード専用の新聞背景（モダンガラス適用時のみ）★ */
-        body[data-theme="default"] .news-card {
-            background-image: linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=800');
-            background-size: cover;
-            background-position: center;
-        }
-
-        /* === GT-R MFDスタイル (gtrテーマ) のカード === */
+        /* GT-R MFDスタイルの装飾 */
         body[data-theme="gtr"] .card {
-            border: 2px solid var(--card-border);
-            box-shadow: var(--shadow);
-            padding-bottom: 35px;
-        }
-        body[data-theme="gtr"] .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            border: 2px solid var(--card-border); padding-bottom: 35px;
         }
         body[data-theme="gtr"] .card-title, body[data-theme="gtr"] .news-source {
-            color: var(--accent-color);
-            font-weight: bold; letter-spacing: 1px;
+            color: var(--accent-color); font-weight: bold; letter-spacing: 1px;
             border-bottom: 1px solid #333; padding-bottom: 5px; text-transform: uppercase;
         }
         body[data-theme="gtr"] .flip-card {
@@ -99,6 +82,7 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,1);
         }
 
+        /* MFD専用のカード下部ラベル */
         .mfd-label { display: none; }
         body[data-theme="gtr"] .mfd-label {
             display: block; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
@@ -106,67 +90,69 @@
             letter-spacing: 3px; opacity: 0.8; font-family: Impact, sans-serif;
         }
 
-        /* ================= ================= ================= =================
-           2. レイアウト (2x2 グリッド)
-           ================= ================= ================= ================= */
+        /* ================= ================= =================
+           2. レイアウト (2x2 グリッド固定)
+           ================= ================= ================= */
         #dashboard {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+            display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr);
             gap: 20px; width: 100%; height: 100%; padding: 20px; box-sizing: border-box;
         }
 
-        .hidden-card { display: none !important; }
-
-        /* ================= ================= ================= =================
+        /* ================= ================= =================
            3. コンポーネントスタイル
-           ================= ================= ================= ================= */
+           ================= ================= ================= */
+        /* 時計・アニメーション */
         #clock-area { justify-content: center; align-items: center; }
         .clock-wrapper { display: flex; align-items: center; justify-content: center; gap: 4px; }
         .flip-group { display: flex; gap: 4px; }
         .flip-card {
             background-color: rgba(45, 45, 45, 0.9); color: #ffffff;
-            font-size: clamp(24px, 4vw, 70px); font-weight: bold; padding: 15px 10px;
+            font-size: clamp(30px, 5vw, 80px); font-weight: bold; padding: 15px 12px;
             border-radius: 8px; min-width: 0.8em; text-align: center;
+            /* アニメーション用の遷移設定 */
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
-        .colon { font-size: clamp(20px, 3vw, 40px); margin: 0 2px; }
+        .colon { font-size: clamp(24px, 4vw, 50px); margin: 0 4px; }
         #date { font-size: 20px; color: var(--text-secondary); margin-top: 15px; }
 
+        /* 天気共通 */
         .weather-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
         #w-main-icon { font-size: 60px; line-height: 1; margin-right: 10px;}
         .weather-main-temp { font-size: 44px; font-weight: bold; }
         
         .hourly-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: auto; }
-        .hourly-item { display: flex; flex-direction: column; align-items: center; font-size: 14px;}
+        .hourly-item { display: flex; flex-direction: column; align-items: center; font-size: 15px;}
         
         .weekly-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; flex-grow: 1; align-items: center; height: 100%; }
-        .weekly-item { display: flex; flex-direction: column; align-items: center; font-size: 13px; }
+        .weekly-item { display: flex; flex-direction: column; align-items: center; font-size: 14px; }
         .temp-high { color: #fc8181; font-weight: bold; }
         .temp-low { color: #63b3ed; font-weight: bold; }
 
-        .news-card { flex-direction: row; align-items: center; gap: 15px; }
-        .news-content { flex: 1; display: flex; flex-direction: column; height: 100%; justify-content: center;}
-        .news-source { font-size: 12px; color: var(--accent-color); margin-bottom: 5px; font-weight: bold; }
-        .news-title { font-size: 18px; font-weight: bold; line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .news-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .news-date { margin-top: 10px; font-size: 12px; color: var(--text-secondary); }
-        .qr-container { width: 80px; height: 80px; background: #fff; padding: 5px; border-radius: 8px; flex-shrink: 0; }
+        /* ニュースカード (自動スクロール & 2件表示) */
+        #news-card { display: flex; flex-direction: column; }
+        .news-header { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: var(--accent-color); border-bottom: 1px solid var(--card-border); padding-bottom: 5px; }
+        .news-container { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        .news-wrapper { transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
+        .news-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); box-sizing: border-box; padding: 10px 0; }
+        .news-content { flex: 1; padding-right: 15px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .news-source { font-size: 11px; color: var(--accent-color); margin-bottom: 4px; font-weight: bold; }
+        .news-title { font-size: 16px; font-weight: bold; line-height: 1.3; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .news-date { font-size: 11px; color: var(--text-secondary); }
+        .qr-container { width: 60px; height: 60px; background: #fff; padding: 4px; border-radius: 6px; flex-shrink: 0; }
         .qr-container img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* ================= ================= ================= =================
+        /* ================= ================= =================
            4. 設定パネル
-           ================= ================= ================= ================= */
+           ================= ================= ================= */
         #menu-btn { position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); border-radius: 8px; color: #fff; font-size: 22px; cursor: pointer; padding: 5px 10px; }
         #settings-panel { position: absolute; top: 0; left: -400px; width: 350px; height: 100vh; background: rgba(20, 20, 20, 0.95); z-index: 999; transition: left 0.3s ease; padding: 70px 20px 20px; box-sizing: border-box; overflow-y: auto; color: #fff;}
         #settings-panel.open { left: 0; }
-        .setting-group { margin-bottom: 15px; }
-        .setting-group label { display: block; margin-bottom: 5px; font-size: 13px; color: #aaa; }
-        .checkbox-label { display: flex; align-items: center; cursor: pointer; font-size: 14px; margin-bottom: 8px;}
-        .checkbox-label input { margin-right: 10px; }
+        .setting-group { margin-bottom: 18px; }
+        .setting-group label { display: block; margin-bottom: 6px; font-size: 13px; color: #aaa; font-weight: bold; }
         input[type="text"], input[type="number"], select { width: 100%; padding: 10px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         
         .order-control { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; }
-        .order-control select { width: 140px; padding: 6px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; }
+        .order-control select { width: 140px; padding: 6px; }
 
         .save-btn { width: 100%; padding: 15px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
     </style>
@@ -177,18 +163,9 @@
     
     <div id="settings-panel">
         <h2 style="margin-top:0; margin-bottom:15px; border-bottom:1px solid #444; padding-bottom:10px;">設定</h2>
-        
-        <div class="setting-group" style="background:#222; padding:10px; border-radius:6px;">
-            <label style="color:#fff; font-weight:bold; border-bottom:1px solid #444; margin-bottom:10px;">カード表示 (※4つ推奨)</label>
-            <label class="checkbox-label"><input type="checkbox" id="set-show-clock" checked> 時計</label>
-            <label class="checkbox-label"><input type="checkbox" id="set-show-weather" checked> 天気 (3時間ごと)</label>
-            <label class="checkbox-label"><input type="checkbox" id="set-show-weekly" checked> 天気 (週間)</label>
-            <label class="checkbox-label"><input type="checkbox" id="set-show-news1" checked> ニュース 1</label>
-            <label class="checkbox-label"><input type="checkbox" id="set-show-news2"> ニュース 2</label>
-        </div>
 
         <div class="setting-group" style="background:#222; padding:10px; border-radius:6px;">
-            <label style="color:#fff; font-weight:bold; border-bottom:1px solid #444; margin-bottom:10px;">カードの配置順</label>
+            <label style="color:#fff; border-bottom:1px solid #444; margin-bottom:10px; padding-bottom:5px;">カード配置順</label>
             <div class="order-control">
                 <span>時計</span>
                 <select id="set-order-clock">
@@ -196,47 +173,24 @@
                     <option value="2">2番目 (右上)</option>
                     <option value="3">3番目 (左下)</option>
                     <option value="4">4番目 (右下)</option>
-                    <option value="5">5番目</option>
                 </select>
             </div>
             <div class="order-control">
                 <span>天気 (3時間)</span>
                 <select id="set-order-weather">
-                    <option value="1">1番目 (左上)</option>
-                    <option value="2">2番目 (右上)</option>
-                    <option value="3">3番目 (左下)</option>
-                    <option value="4">4番目 (右下)</option>
-                    <option value="5">5番目</option>
+                    <option value="1">1番目 (左上)</option><option value="2">2番目 (右上)</option><option value="3">3番目 (左下)</option><option value="4">4番目 (右下)</option>
                 </select>
             </div>
             <div class="order-control">
                 <span>天気 (週間)</span>
                 <select id="set-order-weekly">
-                    <option value="1">1番目 (左上)</option>
-                    <option value="2">2番目 (右上)</option>
-                    <option value="3">3番目 (左下)</option>
-                    <option value="4">4番目 (右下)</option>
-                    <option value="5">5番目</option>
+                    <option value="1">1番目 (左上)</option><option value="2">2番目 (右上)</option><option value="3">3番目 (左下)</option><option value="4">4番目 (右下)</option>
                 </select>
             </div>
             <div class="order-control">
-                <span>ニュース 1</span>
-                <select id="set-order-news1">
-                    <option value="1">1番目 (左上)</option>
-                    <option value="2">2番目 (右上)</option>
-                    <option value="3">3番目 (左下)</option>
-                    <option value="4">4番目 (右下)</option>
-                    <option value="5">5番目</option>
-                </select>
-            </div>
-            <div class="order-control">
-                <span>ニュース 2</span>
-                <select id="set-order-news2">
-                    <option value="1">1番目 (左上)</option>
-                    <option value="2">2番目 (右上)</option>
-                    <option value="3">3番目 (左下)</option>
-                    <option value="4">4番目 (右下)</option>
-                    <option value="5">5番目</option>
+                <span>ニュース</span>
+                <select id="set-order-news">
+                    <option value="1">1番目 (左上)</option><option value="2">2番目 (右上)</option><option value="3">3番目 (左下)</option><option value="4">4番目 (右下)</option>
                 </select>
             </div>
         </div>
@@ -244,23 +198,32 @@
         <div class="setting-group">
             <label>デザインテーマ</label>
             <select id="set-theme">
-                <option value="default">モダンガラス (標準)</option>
+                <option value="default">モダンガラス</option>
                 <option value="flat">フラットダーク</option>
                 <option value="gtr">MFDスタイル (GT-R風)</option>
             </select>
         </div>
 
         <div class="setting-group">
-            <label>背景画像 (モダンガラスに最適)</label>
-            <select id="set-bg-theme">
-                <option value="city_night">都会の夜景 (標準)</option>
-                <option value="abstract">抽象的な光</option>
-                <option value="black">ソリッドブラック</option>
+            <label>時計アニメーション</label>
+            <select id="set-clock-anim">
+                <option value="flip">パタパタ</option>
+                <option value="slide">スライド</option>
+                <option value="fade">フェード</option>
             </select>
         </div>
 
         <div class="setting-group">
-            <label>更新頻度 (分)</label>
+            <label>ニュース スクロール間隔</label>
+            <select id="set-news-speed">
+                <option value="3000">3秒ごと</option>
+                <option value="5000">5秒ごと</option>
+                <option value="10000">10秒ごと</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <label>データ更新頻度 (分)</label>
             <input type="number" id="set-freq" value="15" min="1" max="120">
         </div>
 
@@ -270,12 +233,11 @@
         </div>
 
         <div class="setting-group">
-            <label>RSS URL (ニュース1)</label> 
+            <label>RSS URL 1</label> 
             <input type="text" id="set-rss1">
         </div>
-
         <div class="setting-group">
-            <label>RSS URL (ニュース2)</label> 
+            <label>RSS URL 2</label> 
             <input type="text" id="set-rss2">
         </div>
         
@@ -284,7 +246,7 @@
 
     <div id="dashboard">
         
-        <div class="card" id="clock-area">
+        <div class="card" id="card-clock">
             <div class="clock-wrapper">
                 <div class="flip-group"><div class="flip-card" id="h1">0</div><div class="flip-card" id="h2">0</div></div>
                 <div class="colon">:</div>
@@ -296,7 +258,7 @@
             <div class="mfd-label">CLOCK</div>
         </div>
         
-        <div class="card" id="weather-card">
+        <div class="card" id="card-weather-hourly">
             <div class="weather-top">
                 <div class="weather-info-left">
                     <div class="card-title" id="w-desc" style="font-size: 18px; margin-bottom: 5px;">取得中...</div>
@@ -307,43 +269,32 @@
                     <div class="weather-main-temp" id="w-temp">--°</div>
                 </div>
             </div>
-            <div class="hourly-grid" id="hourly-forecast">
-                </div>
+            <div class="hourly-grid" id="hourly-forecast"></div>
             <div class="mfd-label">WEATHER</div>
         </div>
 
-        <div class="card" id="weekly-card">
-            <div class="card-title" style="font-size: 16px; margin-bottom: 10px;">週間予報</div>
-            <div class="weekly-grid" id="weekly-forecast">
-                </div>
+        <div class="card" id="card-weather-weekly">
+            <div class="news-header">WEEKLY FORECAST</div>
+            <div class="weekly-grid" id="weekly-forecast"></div>
             <div class="mfd-label">WEEKLY</div>
         </div>
 
-        <div class="card news-card" id="news-card-1">
-            <div class="news-content">
-                <div id="n-source-1" class="news-source">ニュース(1)取得中...</div>
-                <div class="news-title" id="n-title-1">--</div>
-                <div class="news-desc" id="n-desc-1">--</div>
-                <div class="news-date" id="n-date-1">--/-- --:--</div>
+        <div class="card" id="card-news">
+            <div class="news-header">LATEST NEWS</div>
+            <div class="news-container" id="news-container">
+                <div class="news-wrapper" id="news-wrapper">
+                    </div>
             </div>
-            <div class="qr-container"><img id="n-qr-1" src="" alt="QR"></div>
-            <div class="mfd-label">NEWS 1</div>
-        </div>
-
-        <div class="card news-card" id="news-card-2">
-            <div class="news-content">
-                <div id="n-source-2" class="news-source">ニュース(2)取得中...</div>
-                <div class="news-title" id="n-title-2">--</div>
-                <div class="news-desc" id="n-desc-2">--</div>
-                <div class="news-date" id="n-date-2">--/-- --:--</div>
-            </div>
-            <div class="qr-container"><img id="n-qr-2" src="" alt="QR"></div>
-            <div class="mfd-label">NEWS 2</div>
+            <div class="mfd-label">NEWS</div>
         </div>
     </div>
 
     <script>
         let updateIntervalId = null;
+        let newsScrollIntervalId = null;
+        let newsItemsData = [];
+        let currentNewsIndex = 0;
+        let clockAnimType = 'flip';
 
         const getWMO = (code) => {
             if (code === 0) return { icon: '☀️', desc: '快晴' };
@@ -355,6 +306,27 @@
             if (code >= 80 && code <= 82) return { icon: '☔', desc: 'にわか雨' };
             if (code >= 95) return { icon: '⛈️', desc: '雷雨' };
             return { icon: '❓', desc: '不明' };
+        };
+
+        // --- 時計処理 (アニメーション付き) ---
+        function updateDigit(id, newValue) {
+            const el = document.getElementById(id);
+            if (el.textContent !== newValue) {
+                if (clockAnimType === 'fade') {
+                    el.style.opacity = '0';
+                    setTimeout(() => { el.textContent = newValue; el.style.opacity = '1'; }, 200);
+                } else if (clockAnimType === 'slide') {
+                    el.style.transform = 'translateY(-15px)'; el.style.opacity = '0';
+                    setTimeout(() => {
+                        el.textContent = newValue;
+                        el.style.transform = 'translateY(15px)';
+                        setTimeout(() => { el.style.transform = 'translateY(0)'; el.style.opacity = '1'; }, 50);
+                    }, 200);
+                } else { // flip (パタパタ)
+                    el.style.transform = 'rotateX(90deg)';
+                    setTimeout(() => { el.textContent = newValue; el.style.transform = 'rotateX(0deg)'; }, 150);
+                }
+            }
         }
 
         function updateClock() {
@@ -363,69 +335,105 @@
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             
-            document.getElementById('h1').textContent = h[0]; document.getElementById('h2').textContent = h[1];
-            document.getElementById('m1').textContent = m[0]; document.getElementById('m2').textContent = m[1];
-            document.getElementById('s1').textContent = s[0]; document.getElementById('s2').textContent = s[1];
+            updateDigit('h1', h[0]); updateDigit('h2', h[1]);
+            updateDigit('m1', m[0]); updateDigit('m2', m[1]);
+            updateDigit('s1', s[0]); updateDigit('s2', s[1]);
             
             const days = ['日', '月', '火', '水', '木', '金', '土'];
             document.getElementById('date').textContent = `${now.getMonth() + 1}月${now.getDate()}日 (${days[now.getDay()]})`;
         }
-        setInterval(updateClock, 1000);
 
+        // --- 設定保存 ---
         function saveSettings() {
             localStorage.setItem('dash_zip', document.getElementById('set-zip').value);
             localStorage.setItem('dash_rss1', document.getElementById('set-rss1').value);
             localStorage.setItem('dash_rss2', document.getElementById('set-rss2').value);
             localStorage.setItem('dash_freq', document.getElementById('set-freq').value);
             localStorage.setItem('dash_theme', document.getElementById('set-theme').value);
-            localStorage.setItem('dash_bg_theme', document.getElementById('set-bg-theme').value); 
+            localStorage.setItem('dash_clock_anim', document.getElementById('set-clock-anim').value);
+            localStorage.setItem('dash_news_speed', document.getElementById('set-news-speed').value);
             
-            // 表示ON/OFF
-            localStorage.setItem('dash_show_clock', document.getElementById('set-show-clock').checked);
-            localStorage.setItem('dash_show_weather', document.getElementById('set-show-weather').checked);
-            localStorage.setItem('dash_show_weekly', document.getElementById('set-show-weekly').checked);
-            localStorage.setItem('dash_show_news1', document.getElementById('set-show-news1').checked);
-            localStorage.setItem('dash_show_news2', document.getElementById('set-show-news2').checked);
-
-            // 並び順
             localStorage.setItem('dash_order_clock', document.getElementById('set-order-clock').value);
-            localStorage.setItem('dash_order_weather', document.getElementById('set-order-weather').value);
-            localStorage.setItem('dash_order_weekly', document.getElementById('set-order-weekly').value);
-            localStorage.setItem('dash_order_news1', document.getElementById('set-order-news1').value);
-            localStorage.setItem('dash_order_news2', document.getElementById('set-order-news2').value);
+            localStorage.setItem('dash_order_weather_h', document.getElementById('set-order-weather').value);
+            localStorage.setItem('dash_order_weather_w', document.getElementById('set-order-weekly').value);
+            localStorage.setItem('dash_order_news', document.getElementById('set-order-news').value);
             
             location.reload();
         }
 
-        async function fetchNewsData(url, cardId) {
-            if (!url) return;
-            try {
-                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
-                const res = await fetch(apiUrl);
-                const data = await res.json();
-                
-                if (data.status === 'ok' && data.items.length > 0) {
-                    const item = data.items[0];
-                    let desc = (item.description || "").replace(/<[^>]+>/g, '');
-                    if(desc.length > 80) desc = desc.substring(0, 80) + '...';
-                    
-                    document.getElementById(`n-source-${cardId}`).textContent = data.feed.title || `NEWS ${cardId}`;
-                    document.getElementById(`n-title-${cardId}`).textContent = item.title;
-                    document.getElementById(`n-desc-${cardId}`).textContent = desc;
-                    
-                    const d = new Date(item.pubDate.replace(/-/g, '/'));
-                    const dateStr = !isNaN(d) ? `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}` : item.pubDate.substring(0,16);
-                    document.getElementById(`n-date-${cardId}`).textContent = dateStr;
-                    document.getElementById(`n-qr-${cardId}`).src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(item.link)}`;
-                } else {
-                    throw new Error('データなし');
-                }
-            } catch (e) {
-                document.getElementById(`n-title-${cardId}`).textContent = 'RSSの取得に失敗しました。URLを確認してください。';
-                document.getElementById(`n-desc-${cardId}`).textContent = '※NHKのRSScat1,cat5以外のURLは弾かれる可能性があります。';
+        // --- ニュース処理 (結合 & スクロール) ---
+        async function fetchNewsData(url1, url2) {
+            let combined = [];
+            for (let url of [url1, url2]) {
+                if (!url) continue;
+                try {
+                    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
+                    const data = await res.json();
+                    if (data.status === 'ok') {
+                        const source = data.feed.title || 'NEWS';
+                        const items = data.items.map(item => ({...item, source}));
+                        combined = combined.concat(items);
+                    }
+                } catch (e) { console.error("RSS fetch error"); }
             }
+            newsItemsData = combined;
+            renderNewsItems();
         }
 
+        function renderNewsItems() {
+            const wrapper = document.getElementById('news-wrapper');
+            const container = document.getElementById('news-container');
+            wrapper.innerHTML = '';
+            if (newsItemsData.length === 0) {
+                wrapper.innerHTML = '<div style="padding:20px; color:#aaa;">ニュースを取得できませんでした</div>';
+                return;
+            }
+
+            // コンテナの半分の高さを「1記事分の高さ」として指定 (1画面2記事表示)
+            const itemHeight = container.clientHeight / 2;
+            
+            newsItemsData.forEach(item => {
+                let desc = (item.description || "").replace(/<[^>]+>/g, '');
+                const d = new Date(item.pubDate.replace(/-/g, '/'));
+                const dateStr = !isNaN(d) ? `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}` : item.pubDate.substring(0,16);
+
+                const div = document.createElement('div');
+                div.className = 'news-item';
+                div.style.height = `${itemHeight}px`; // 高さを固定
+                div.innerHTML = `
+                    <div class="news-content">
+                        <div class="news-source">${item.source}</div>
+                        <div class="news-title">${item.title}</div>
+                        <div class="news-date">${dateStr}</div>
+                    </div>
+                    <div class="qr-container"><img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(item.link)}" alt="QR"></div>
+                `;
+                wrapper.appendChild(div);
+            });
+
+            startNewsScroll(itemHeight);
+        }
+
+        function startNewsScroll(itemHeight) {
+            if (newsScrollIntervalId) clearInterval(newsScrollIntervalId);
+            const speed = parseInt(localStorage.getItem('dash_news_speed')) || 5000;
+            const wrapper = document.getElementById('news-wrapper');
+            
+            newsScrollIntervalId = setInterval(() => {
+                if (newsItemsData.length <= 2) return; // 2件以下の場合はスクロール不要
+                currentNewsIndex += 2; // 2件ずつ進む
+                if (currentNewsIndex >= newsItemsData.length) currentNewsIndex = 0;
+                
+                wrapper.style.transform = `translateY(-${currentNewsIndex * itemHeight}px)`;
+            }, speed);
+        }
+
+        // リサイズ時にニュースの高さを再計算
+        window.addEventListener('resize', () => {
+            if(newsItemsData.length > 0) renderNewsItems();
+        });
+
+        // --- 天気処理 ---
         async function fetchWeather(zip) {
             try {
                 const geoUrl = `https://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zip}`;
@@ -450,7 +458,7 @@
                 const now = new Date();
                 let startIndex = wData.hourly.time.findIndex(t => new Date(t) > now);
                 if (startIndex === -1) startIndex = 0;
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < 4; i++) { // 3時間ごとは4枠表示
                     const index = startIndex + (i * 3);
                     if (index < wData.hourly.time.length) {
                         const hInfo = getWMO(wData.hourly.weather_code[index]);
@@ -458,7 +466,7 @@
                         const tempVal = Math.round(wData.hourly.temperature_2m[index]);
                         hHtml += `<div class="hourly-item">
                             <div style="color:var(--text-secondary);">${hourVal}時</div>
-                            <div style="font-size:22px; margin:4px 0;">${hInfo.icon}</div>
+                            <div style="font-size:26px; margin:6px 0;">${hInfo.icon}</div>
                             <div style="font-weight:bold;">${tempVal}°</div>
                         </div>`;
                     }
@@ -486,87 +494,63 @@
             } catch (e) { document.getElementById('w-desc').textContent = '天気取得エラー'; }
         }
 
+        // --- 初期化 ---
         window.onload = () => {
             const zip = localStorage.getItem('dash_zip') || '2540000';
             const rss1 = localStorage.getItem('dash_rss1') || 'https://news.web.nhk/n-data/conf/na/rss/cat1.xml';
             const rss2 = localStorage.getItem('dash_rss2') || 'https://news.web.nhk/n-data/conf/na/rss/cat5.xml';
             const freq = parseInt(localStorage.getItem('dash_freq')) || 15;
             const theme = localStorage.getItem('dash_theme') || 'default';
-            const bgTheme = localStorage.getItem('dash_bg_theme') || 'city_night'; 
-            
-            const showClock = localStorage.getItem('dash_show_clock') !== 'false';
-            const showWeather = localStorage.getItem('dash_show_weather') !== 'false';
-            const showWeekly = localStorage.getItem('dash_show_weekly') !== 'false';
-            const showNews1 = localStorage.getItem('dash_show_news1') !== 'false';
-            
-            const storedShowNews2 = localStorage.getItem('dash_show_news2');
-            const showNews2 = storedShowNews2 === null ? false : storedShowNews2 !== 'false';
+            clockAnimType = localStorage.getItem('dash_clock_anim') || 'flip';
+            const newsSpeed = localStorage.getItem('dash_news_speed') || '5000';
 
             const orderClock = localStorage.getItem('dash_order_clock') || '1';
-            const orderWeather = localStorage.getItem('dash_order_weather') || '2';
-            const orderWeekly = localStorage.getItem('dash_order_weekly') || '3';
-            const orderNews1 = localStorage.getItem('dash_order_news1') || '4';
-            const orderNews2 = localStorage.getItem('dash_order_news2') || '5';
+            const orderWeatherH = localStorage.getItem('dash_order_weather_h') || '2';
+            const orderWeatherW = localStorage.getItem('dash_order_weather_w') || '3';
+            const orderNews = localStorage.getItem('dash_order_news') || '4';
 
+            // UIへの値セット
             document.getElementById('set-zip').value = zip;
             document.getElementById('set-rss1').value = rss1;
             document.getElementById('set-rss2').value = rss2;
             document.getElementById('set-freq').value = freq;
             document.getElementById('set-theme').value = theme;
-            document.getElementById('set-bg-theme').value = bgTheme; 
-            
-            document.getElementById('set-show-clock').checked = showClock;
-            document.getElementById('set-show-weather').checked = showWeather;
-            document.getElementById('set-show-weekly').checked = showWeekly;
-            document.getElementById('set-show-news1').checked = showNews1;
-            document.getElementById('set-show-news2').checked = showNews2;
+            document.getElementById('set-clock-anim').value = clockAnimType;
+            document.getElementById('set-news-speed').value = newsSpeed;
 
             document.getElementById('set-order-clock').value = orderClock;
-            document.getElementById('set-order-weather').value = orderWeather;
-            document.getElementById('set-order-weekly').value = orderWeekly;
-            document.getElementById('set-order-news1').value = orderNews1;
-            document.getElementById('set-order-news2').value = orderNews2;
+            document.getElementById('set-order-weather').value = orderWeatherH;
+            document.getElementById('set-order-weekly').value = orderWeatherW;
+            document.getElementById('set-order-news').value = orderNews;
 
-            if(!showClock) document.getElementById('clock-area').classList.add('hidden-card');
-            if(!showWeather) document.getElementById('weather-card').classList.add('hidden-card');
-            if(!showWeekly) document.getElementById('weekly-card').classList.add('hidden-card');
-            if(!showNews1) document.getElementById('news-card-1').classList.add('hidden-card');
-            if(!showNews2) document.getElementById('news-card-2').classList.add('hidden-card');
+            // 配置順の適用
+            document.getElementById('card-clock').style.order = orderClock;
+            document.getElementById('card-weather-hourly').style.order = orderWeatherH;
+            document.getElementById('card-weather-weekly').style.order = orderWeatherW;
+            document.getElementById('card-news').style.order = orderNews;
 
-            document.getElementById('clock-area').style.order = orderClock;
-            document.getElementById('weather-card').style.order = orderWeather;
-            document.getElementById('weekly-card').style.order = orderWeekly;
-            document.getElementById('news-card-1').style.order = orderNews1;
-            document.getElementById('news-card-2').style.order = orderNews2;
-
+            // テーマの適用
             document.body.setAttribute('data-theme', theme);
 
-            const cityNightUrl = "https://images.unsplash.com/photo-1549887552-cb1071d3e5ca?q=80&w=1600";
-            const abstractUrl = "https://images.unsplash.com/photo-1520004434532-668416d0c78d?q=80&w=1600";
-
-            if (theme === 'gtr') {
-                document.body.style.backgroundImage = "none";
-            } else {
-                if (bgTheme === 'city_night') document.body.style.backgroundImage = `url('${cityNightUrl}')`;
-                else if (bgTheme === 'abstract') document.body.style.backgroundImage = `url('${abstractUrl}')`;
-                else document.body.style.backgroundImage = "none";
-            }
-
+            // 初回実行
+            setInterval(updateClock, 1000);
             updateClock();
-            if(showWeather || showWeekly) fetchWeather(zip);
-            if(showNews1) fetchNewsData(rss1, 1);
-            if(showNews2) fetchNewsData(rss2, 2);
+            fetchWeather(zip);
+            fetchNewsData(rss1, rss2);
             
+            // 定期更新設定
             if(updateIntervalId) clearInterval(updateIntervalId);
             updateIntervalId = setInterval(() => { 
-                if(showWeather || showWeekly) fetchWeather(zip); 
-                if(showNews1) fetchNewsData(rss1, 1); 
-                if(showNews2) fetchNewsData(rss2, 2); 
+                fetchWeather(zip); 
+                fetchNewsData(rss1, rss2); 
             }, freq * 60000);
         };
 
+        // メニューの開閉
         document.getElementById('menu-btn').addEventListener('click', () => {
             document.getElementById('settings-panel').classList.toggle('open');
+            // メニューを閉じた時にニュースの高さを再計算（表示領域の変更に対応するため）
+            setTimeout(renderNewsItems, 350); 
         });
     </script>
 </body>
